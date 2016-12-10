@@ -16,7 +16,7 @@ Girare
 python flattener.py
 ```
 
-per fare il downsample delle immagini. Questo genera due pickle nella cartella `features/` che sono due dict con dentro gli array numpy 3x3x3 downsampled. Hai tempo di farti un caffettino.
+per fare l'estrazione delle features. Questo genera due pickle nella cartella `features/` che sono due dict con dentro gli array delle features. Hai tempo di farti un caffettino.
 
 Poi:
 
