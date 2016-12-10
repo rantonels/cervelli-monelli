@@ -8,13 +8,32 @@ import scipy.signal
 from tqdm import tqdm
 import pickle
 
-t_side = 3
+t_side = 2
 
 target_shape = np.array([t_side,t_side,t_side,1])
 
 def open_and_flatten(filename):
     brain_scan = nib.load(filename)
     brain_array = brain_scan.get_data().mean(-1)
+
+
+    fourier_brain = np.fft.fftn(brain_array)
+
+
+    fourier_slice = fourier_brain[0:t_side,0:t_side,0:t_side]
+
+    re = np.real(fourier_slice)
+    re = re.reshape((re.size,))
+    im = np.imag(fourier_slice)[1:]
+    im = im.reshape((im.size,))
+
+    out = np.concatenate((re,im)) * 1e-8
+    return out
+
+
+    return np.array([mean])
+
+
     
     ceil_shape = (t_side*np.ceil(np.array(brain_array.shape[0:3])/float(t_side))).astype(int)
 
