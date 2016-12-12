@@ -16,7 +16,7 @@ Girare
 python flattener.py
 ```
 
-per fare l'estrazione delle features. Questo genera due pickle nella cartella `features/` che sono due dict con dentro gli array delle features. Hai tempo di farti un caffettino.
+per fare l'estrazione delle features. Questo genera due pickle nella cartella `features/` che sono due dict con dentro gli array delle features. Come features ho usato i primi modi della DFT. Hai tempo di farti un caffettino.
 
 Poi:
 
@@ -24,4 +24,4 @@ Poi:
 python classifier.py
 ```
 
-Addestra i classificatori (uno che performava bene su tutte le labelle è il processo gaussiano) e tira giù due statistiche
+Addestra i classificatori e tira giù due statistiche. Poi, neanche te ne accorgi, ma nel frattempo ti ha preparato anche il file da sottomettere per l'esame, che si chiama `submission`.
