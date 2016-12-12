@@ -116,6 +116,7 @@ def train(): # addestra i classificatori e stampa info
 good_classifiers = train()
 
 
+
 test_array = load_pickle_dataset("features/test_dataset")
 
 test_output = {}
@@ -134,7 +135,10 @@ for i in range(num_data):
         output_strink +=    str(3*i + label) + "\t" \
                             + str(i) + "\t" \
                             + labels_names[label] + "\t"\
-                            + bool_words[ test_output[label][i] ] + "\n"
+                            + bool_words[ test_output[label][i] ] 
+
+        if (3*i + label != 413):
+            output_strink += "\n"
 
 f = open("submission",'w')
 f.write(output_strink)
