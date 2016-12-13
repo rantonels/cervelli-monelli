@@ -3,7 +3,6 @@
 import numpy as np
 import nibabel as nib
 import os
-import matplotlib.pyplot as plt
 import scipy.signal
 from tqdm import tqdm
 import pickle
@@ -66,7 +65,7 @@ if not os.path.exists(d):
 train_dataset = {}
 
 for index in tqdm(range(1,entries_total+1)):
-    flattened = open_and_flatten("set_train/train_%d.nii"%index)
+    flattened = open_and_flatten("data/set_train/train_%d.nii"%index)
     train_dataset[index] = flattened
 
 pickle.dump(train_dataset, open(os.path.join(out_path,"train_dataset"),'w'))
@@ -74,7 +73,7 @@ pickle.dump(train_dataset, open(os.path.join(out_path,"train_dataset"),'w'))
 test_dataset = {}
 
 for index in tqdm(range(1,entries_test+1)):
-    flattened = open_and_flatten("set_test/test_%d.nii"%index)
+    flattened = open_and_flatten("data/set_test/test_%d.nii"%index)
     test_dataset[index] = flattened
 
 

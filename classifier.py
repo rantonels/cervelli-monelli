@@ -32,7 +32,7 @@ def blist2str(l):
 def train(): # addestra i classificatori e stampa info
 
     targets = {}
-    with open("targets.csv",'rb') as csvfile:
+    with open("data/mlp3-targets.csv",'rb') as csvfile:
         reader = csv.reader(csvfile,delimiter = ",")
         index = 1
         for row in reader:
@@ -128,18 +128,17 @@ for label in range(3):
 
 num_data = test_array.shape[0]
 
-bool_words = { 0: "FALSE", 1: "TRUE" }
 
-for i in range(num_data):
-    for label in range(3):
-        output_strink +=    str(3*i + label) + "\t" \
-                            + str(i) + "\t" \
-                            + labels_names[label] + "\t"\
-                            + bool_words[ test_output[label][i] ] 
-
-        if (3*i + label != 413):
-            output_strink += "\n"
-
-f = open("submission",'w')
-f.write(output_strink)
-f.close()
+with open("submission.csv",'w') as outfile:
+    writer = csv.writer(outfile)
+    writer.writerow([
+        "ID", "Sample", "Label", "Predicted"
+    ])
+    for i in range(num_data):
+        for label in range(3):
+            writer.writerow([
+                3 * i + label,
+                i,
+                labels_names[label],
+                bool(test_output[label][i]) 
+            ])
