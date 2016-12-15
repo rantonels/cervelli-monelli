@@ -78,7 +78,7 @@ def train(): # addestra i classificatori e stampa info
         # feature selection
 
 
-        if False:
+        if False: # non attivare, se la vuoi attivare la devi anche infilare nel test_set
             print("feature selection...")
             clf = ExtraTreesClassifier()
 
@@ -180,9 +180,8 @@ def train(): # addestra i classificatori e stampa info
 good_classifiers = train()
 
 
-exit()
 
-test_array = load_pickle_dataset("features/test_dataset")
+test_array = load_pickle_dataset("features/test_dataset.npy")
 
 test_output = {}
 

@@ -156,17 +156,21 @@ if not os.path.exists(d):
 
 train_dataset = []
 
-features_abis = {}
-with open("features/features_abis.csv",'rb') as csvfile:
-    reader = csv.reader(csvfile,delimiter = ",")
-    first_row = True
-    for row in reader:
-        if first_row:
-            first_row = False
-            continue
-        fid,data = int(row[0]), row[4:]
-        features_abis[fid] = np.array(data)
+def load_features_abis(fname):
+    out = {}
+    with open(fname,'rb') as csvfile:
+        reader = csv.reader(csvfile,delimiter = ",")
+        first_row = True
+        for row in reader:
+            if first_row:
+                first_row = False
+                continue
+            fid,data = int(row[0]), row[4:]
+            out[fid] = np.array(data)
+    return out
 
+features_abis = load_features_abis("features/features_abis.csv")
+features_abis_test = load_features_abis("features/features_abis-test.csv")
 
 
 for index in tqdm(range(1,entries_total+1)):
@@ -182,16 +186,24 @@ train_dataset = np.array(train_dataset)
 print("Saving...")
 np.save(os.path.join(out_path,"train_dataset"),train_dataset)
 
-exit(1)
 
-test_dataset = {}
+test_dataset = []
 
 for index in tqdm(range(1,entries_test+1)):
-    flattened = open_and_flatten("data/set_test/test_%d.nii"%index)
-    test_dataset[index] = flattened
+    flattened = open_and_flatten("data/cropped/test_%d_cropped.nii.gz"%index)
+    flattened_abis = np.array(features_abis_test[index])
+    flattened = np.concatenate((flattened,flattened_abis))
+    test_dataset.append(flattened)
 
 
-pickle.dump(test_dataset, open(os.path.join(out_path,"test_dataset"),'w'))
+print("Converting to np array...")
+
+test_dataset = np.array(test_dataset)
+
+print("Saving...")
+np.save(os.path.join(out_path,"test_dataset"),test_dataset)
+
+
 
 
 
