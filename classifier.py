@@ -78,7 +78,7 @@ def train(): # addestra i classificatori e stampa info
         # feature selection
 
 
-        if True:
+        if False:
             print("feature selection...")
             clf = ExtraTreesClassifier()
 
