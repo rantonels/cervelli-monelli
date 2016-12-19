@@ -22,7 +22,23 @@ fisher_threshold = scipy.stats.mstats.mquantiles(
 fisher_mask = fisher > fisher_threshold
 
 
-def open_and_flatten(filename):
+desikan_label_ids = {
+    "left_thalamus": 10,
+    "right_thalamus": 49,
+    "left_caudate": 11,
+    "right_caudate": 50,
+    "left_putamen": 12,
+    "right_putamen": 51,
+    "left_pallidum": 13,
+    "right_pallidum": 52,
+    "left_hippocampus": 17,
+    "right_hippocampus": 53,
+    "left_amygdala": 18,
+    "right_amygdala": 54,
+}
+
+
+def open_and_flatten(filename,atlas_filename):
 
     brain_scan = nib.load(filename)
     brain_array = brain_scan.get_data().mean(-1)
@@ -48,17 +64,34 @@ def open_and_flatten(filename):
     fisher_feature = np.einsum("ijk,ijk",brain_trunc, fisher_mask)
     fisher_features = brain_trunc[ fisher_mask ]
 
-    fourier_brain = np.fft.fftn(brain_trunc)
+    #FOURIER
+    
+#    fourier_brain = np.fft.fftn(brain_trunc)
+#
+#
+#    fourier_slice = fourier_brain[0:3,0:3,0:3]
+#
+#    re = np.real(fourier_slice)
+#    re = re.reshape((re.size,))
+#    im = np.imag(fourier_slice)[1:]
+#    im = im.reshape((im.size,))
+#
+#    out_fourier = np.concatenate((re,im)) * 1e-8
 
+    #ATLAS
 
-    fourier_slice = fourier_brain[0:3,0:3,0:3]
+    atlas = nib.load(atlas_filename).get_data()
 
-    re = np.real(fourier_slice)
-    re = re.reshape((re.size,))
-    im = np.imag(fourier_slice)[1:]
-    im = im.reshape((im.size,))
+    atlas_out = []
+    for region_name in desikan_label_ids:
+        region_id = desikan_label_ids[region_name]
+        region_data = brain_trunc[atlas == region_id]
+        atlas_out.extend(( 
+                np.mean(region_data),
+                np.median(region_data),
+                np.std(region_data)
+                ))
 
-    out_fourier = np.concatenate((re,im)) * 1e-8
 #
 # 
 #    # histograms
@@ -115,6 +148,7 @@ def open_and_flatten(filename):
         np.array([mean,median,variance,csf,gm,wm,fisher_feature]),
         np.array([]),
         fisher_features,
+        atlas_out
 #        out_fourier
         ))
 #        histograms
@@ -174,7 +208,8 @@ features_abis_test = load_features_abis("features/features_abis-test.csv")
 
 
 for index in tqdm(range(1,entries_total+1)):
-    flattened = open_and_flatten("data/cropped/train_%d_cropped.nii.gz"%index)
+    flattened = open_and_flatten(   "data/cropped/train_%d_cropped.nii.gz"%index,
+                                    "data/fsl/train_%d_cropped/train_%d_cropped_warped_atlas.nii.gz"%(index,index))
     flattened_abis = np.array(features_abis[index])
     flattened = np.concatenate((flattened,flattened_abis))
     train_dataset.append(flattened)
